@@ -1,4 +1,5 @@
 from interactions import *
+from datetime import datetime
 
 class Dashboard(Extension):
     def __init__(self, bot, db):
@@ -12,15 +13,17 @@ class Dashboard(Extension):
         dash_db = db["dashboard"]
         all_value, cyber_value, dev_value = [], [], []
 
+        current_date = datetime.now()
         homeworks = homework_db.find().sort("subject")
         #rempli les listes des bon devoirs (il faudra trier les dates)
         for homework in homeworks:
-            if homework["class"] == "all":
-                all_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['end_date'].strftime('%d %m %Y')}")
-            elif homework["class"] == "cyber2":
-                cyber_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['end_date'].strftime('%d %m %Y')}")
-            elif homework["class"] == "dev":
-                dev_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['end_date'].strftime('%d %m %Y')}")
+            if homework['end_date'] >= current_date:
+                if homework["class"] == "all":
+                    all_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['end_date'].strftime('%d %m %Y')}")
+                elif homework["class"] == "cyber2":
+                    cyber_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['end_date'].strftime('%d %m %Y')}")
+                elif homework["class"] == "dev":
+                    dev_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['end_date'].strftime('%d %m %Y')}")
 
         dash_info = dash_db.find_one({"id":"1"})
         channel = bot.get_channel(str(dash_info["channel_id"]))
