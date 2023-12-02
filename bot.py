@@ -17,7 +17,7 @@ dash_db = db["dashboard"]
 
 try:
     client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
+    print("You successfully connected to MongoDB!")
 except Exception as e:
     print(e)
     print("Don't forget to check authorized IP")
@@ -27,11 +27,11 @@ bot = Client(intents=Intents.DEFAULT)
 @listen()
 async def on_startup():
     print(f"Salut c'est {bot.user.display_name} fait par {bot.owner.display_name}")
-    await bot.wait_until_ready()
 
 @slash_command(name="hi")
 async def hello(ctx: SlashContext):
     await ctx.send("Hello world!")
 
+bot.load_extension("modal_add", bot, db=db)
 bot.load_extension("dashboard", bot, db=db)
 bot.start(os.environ.get('TOKEN'))

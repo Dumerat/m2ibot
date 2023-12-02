@@ -1,5 +1,6 @@
 from interactions import *
 from datetime import datetime
+from interactions.api.events import Component
 
 class Dashboard(Extension):
     def __init__(self, bot, db):
@@ -30,7 +31,7 @@ class Dashboard(Extension):
         if channel:
             dashboard = Embed(
             title="DASHBOARD",
-            description="feur-feur-feur-feur-feur-feur-feur-feur-feur-feur-feur-feur-feur-feur-feur-feur-feur-feur",
+            description="feur-feur-feur",
             color=0x018992,
             fields=[
                 EmbedField(
@@ -68,9 +69,11 @@ class Dashboard(Extension):
                     {"id":"1"},
                     {"$set": {"message_id": new_dash.id}}
                 )
+        else:
+            print('Channel not defined OR DOOMED !')
 
     #auto update dashboard call
-    @Task.create(IntervalTrigger(minutes=2))
+    @Task.create(IntervalTrigger(minutes=5))
     async def update(self):
         await self.dashboard_update(self.bot, self.db)
 
@@ -78,3 +81,10 @@ class Dashboard(Extension):
     async def on_startup(self):
         await self.dashboard_update(self.bot, self.db) #update the dashboard at the start
         self.update.start() #start the auto update task
+    
+    @listen(Component)
+    async def on_component(self, event: Component):
+        ctx = event.ctx
+        match ctx.custom_id:
+            case "force_update":
+                await self.dashboard_update(self.bot, self.db)
