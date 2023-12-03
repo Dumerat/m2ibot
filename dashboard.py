@@ -20,11 +20,11 @@ class Dashboard(Extension):
         for homework in homeworks:
             if homework['end_date'] >= current_date:
                 if homework["class"] == "all":
-                    all_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['end_date'].strftime('%d %m %Y')}")
+                    all_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['subject']} -.- {homework['end_date'].strftime('%d %m %Y')}")
                 elif homework["class"] == "cyber2":
-                    cyber_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['end_date'].strftime('%d %m %Y')}")
+                    cyber_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['subject']} -.- {homework['end_date'].strftime('%d %m %Y')}")
                 elif homework["class"] == "dev":
-                    dev_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['end_date'].strftime('%d %m %Y')}")
+                    dev_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['subject']} -.- {homework['end_date'].strftime('%d %m %Y')}")
 
         dash_info = dash_db.find_one({"id":"1"})
         channel = bot.get_channel(str(dash_info["channel_id"]))
@@ -36,17 +36,17 @@ class Dashboard(Extension):
             fields=[
                 EmbedField(
                     name="Devoirs commun:",
-                    value="\n".join([f"- [{item.split('-.-')[0]}]({item.split('-.-')[1]}) pour le: {item.split('-.-')[2]}" for item in all_value]) if all_value else " ",
+                    value="\n".join([f"- [{item.split('-.-')[0]}]({item.split('-.-')[1]}) de {item.split('-.-')[2]} pour le: {item.split('-.-')[3]}" for item in all_value]) if all_value else " ",
                     inline=False,
                 ),
                 EmbedField(
                     name="Devoirs cyber2:",
-                    value="\n".join([f"- [{item.split('-.-')[0]}]({item.split('-.-')[1]}) pour le: {item.split('-.-')[2]}" for item in cyber_value]) if cyber_value else " ",
+                    value="\n".join([f"- [{item.split('-.-')[0]}]({item.split('-.-')[1]}) de {item.split('-.-')[2]} pour le: {item.split('-.-')[3]}" for item in cyber_value]) if cyber_value else " ",
                     inline=False,
                 ),
                 EmbedField(
                     name="Devoirs dev:",
-                    value="\n".join([f"- [{item.split('-.-')[0]}]({item.split('-.-')[1]}) pour le: {item.split('-.-')[2]}" for item in dev_value]) if dev_value else " ",
+                    value="\n".join([f"- [{item.split('-.-')[0]}]({item.split('-.-')[1]}) de {item.split('-.-')[2]} pour le: {item.split('-.-')[3]}" for item in dev_value]) if dev_value else " ",
                     inline=False,
                 ),
             ])
@@ -54,7 +54,7 @@ class Dashboard(Extension):
                 url=bot.user.avatar_url,
             ),
             dashboard.set_image(
-                url="https://img.freepik.com/vecteurs-libre/vecteur-degrade-logo-colore-oiseau_343694-1365.jpg?w=740&t=st=1701211535~exp=1701212135~hmac=7ffc50bd025a728e9303b8d754474d20311ae9ed63213116b34a030fbf86e58c",
+                url="",
             ),
             dashboard.set_footer(
                 text=f"by {bot.owner.global_name}",
