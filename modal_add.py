@@ -1,6 +1,6 @@
 from interactions import *
 
-class Dashboard(Extension):
+class Modal(Extension):
     def __init__(self, bot, db):
         super().__init__()
         self.bot = bot
@@ -18,6 +18,6 @@ class Dashboard(Extension):
 
         short_text = modal_ctx.responses["short_text"]
         long_text = modal_ctx.responses["long_text"]
-        
+
         await modal_ctx.send(f"Short text: {short_text}, Paragraph text: {long_text}", ephemeral=True)
     
