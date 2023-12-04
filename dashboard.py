@@ -86,5 +86,5 @@ class Dashboard(Extension):
     async def on_component(self, event: Component):
         ctx = event.ctx
         match ctx.custom_id:
-            case "force_update":
+            case "force_update": #not created yet
                 await self.dashboard_update(self.bot, self.db)
