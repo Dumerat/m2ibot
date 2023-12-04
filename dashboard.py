@@ -16,7 +16,7 @@ class Dashboard(Extension):
 
         current_date = datetime.now()
         homeworks = homework_db.find().sort("subject")
-        #rempli les listes des bons devoirs (il faudra trier les dates)
+        #remplie les listes des bons devoirs (il faudra trier les dates)
         for homework in homeworks:
             if homework['end_date'] >= current_date:
                 if homework["class"] == "all":
