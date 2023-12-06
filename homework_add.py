@@ -10,8 +10,14 @@ class Homework_add(Extension):
             name="add",
             description="Permet d'ajouter un devoir pour tout le monde")
     @slash_option(
-        name = "integer_option",
-        description= "la desc 1",
+        name = "name",
+        description= "nom du devoir",
+        required=True,
+        opt_type=OptionType.STRING,
+        )
+    @slash_option(
+        name = "name",
+        description= "nom du devoir",
         required=True,
         opt_type=OptionType.INTEGER,
         choices=[
