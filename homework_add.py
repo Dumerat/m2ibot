@@ -6,7 +6,7 @@ class Homework_add(Extension):
         self.bot = bot
         self.db = db
         
-        subject = self.db["homework"].find().sort("subject")
+        subject = self.db["homework"].find().sort("subject") # to be changed by another collection containing all structural data cuz this is shit
         subject_list = set(",".join(sub["subject"] for sub in subject).split(",")) # create a set of unique subject in all homework
         self.choice_list =[SlashCommandChoice(name=i, value=i) for i in subject_list]
         self.setup_commands()
@@ -38,7 +38,8 @@ class Homework_add(Extension):
                 SlashCommandChoice(name="nuggets", value=2)
             ]
             )
-        async def message_add(ctx):
-            await ctx.send(f"yo ça marche feur)")
+        async def message_add(ctx: SlashContext):
+            a = ctx.args[0] # 0 for name 1 for sub etcc
+            await ctx.send(f"yo ça marche feur{ctx}{a}")
 
         self.bot.add_command(message_add)
