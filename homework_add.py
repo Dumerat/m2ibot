@@ -6,9 +6,14 @@ class Homework_add(Extension):
         self.bot = bot
         self.db = db
 
+    def get_sub(self):
+        subject = self.db["homework"].find().sort("subject")
+        subject_list = set(",".join(sub["subject"] for sub in subject).split(",")) # create a set of unique subject in all homework
+        return [SlashCommandChoice(name=i, value=i) for i in subject_list]
+
     @slash_command(
-            name="add",
-            description="Permet d'ajouter un devoir pour tout le monde")
+        name="add",
+        description="Permet d'ajouter un devoir pour tout le monde")
     @slash_option(
         name = "name",
         description= "nom du devoir",
@@ -16,7 +21,14 @@ class Homework_add(Extension):
         opt_type=OptionType.STRING,
         )
     @slash_option(
-        name = "name",
+        name = "matière",
+        description= "nom de la matière",
+        required=True,
+        opt_type=OptionType.STRING,
+        choices=get_sub
+        )
+    @slash_option(
+        name = "named",
         description= "nom du devoir",
         required=True,
         opt_type=OptionType.INTEGER,
@@ -25,5 +37,5 @@ class Homework_add(Extension):
             SlashCommandChoice(name="nuggets", value=2)
         ]
         )
-    async def test(self, ctx: ComponentContext, integer_option: int = 1):
-        await ctx.send(f"yo ça marche {integer_option}")
+    async def message_add(self, ctx):
+        await ctx.send(f"yo ça marche ")
