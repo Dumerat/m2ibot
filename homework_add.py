@@ -62,8 +62,8 @@ class Homework_add(Extension):
             )
         async def message_add(ctx: SlashContext, nom, matière, classe, date_start, date_end, link):
             try:
-                date_start = datetime.strptime(date_start, "%Y-%m-%d").strftime("%Y-%m-%dT%H:%M:%S.000+00:00")
-                date_end = datetime.strptime(date_end, "%Y-%m-%d").strftime("%Y-%m-%dT%H:%M:%S.000+00:00")
+                date_start = datetime.strptime(date_start, "%Y-%m-%d")
+                date_end = datetime.strptime(date_end, "%Y-%m-%d")
             except ValueError:
                 await ctx.send("Erreur de format de date. Utilisez le format YYYY-MM-DD.")
             
