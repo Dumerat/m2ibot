@@ -38,8 +38,7 @@ class Homework_add(Extension):
                 SlashCommandChoice(name="nuggets", value=2)
             ]
             )
-        async def message_add(ctx: SlashContext):
-            a = ctx.args[0] # 0 for name 1 for sub etcc
-            await ctx.send(f"yo ça marche feur{ctx}{a}")
+        async def message_add(ctx: SlashContext, name, matière, named):
+            await ctx.send(f"yo ça marche feur{ctx} {matière, named}")
 
         self.bot.add_command(message_add)
