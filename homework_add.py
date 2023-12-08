@@ -6,8 +6,8 @@ class Homework_add(Extension):
         self.bot = bot
         self.db = db
         
-        subject = self.db["homework"].find().sort("subject") # to be changed by another collection containing all structural data cuz this is shit
-        subject_list = set(",".join(sub["subject"] for sub in subject).split(",")) # create a set of unique subject in all homework
+        subject = self.db["data"].find_one({"id":"subject"})
+        subject_list = subject["list"]
         self.choice_list =[SlashCommandChoice(name=i, value=i) for i in subject_list]
         self.setup_commands()
 
