@@ -13,7 +13,7 @@ class Homework_add(Extension):
         class_data = self.db["data"].find_one({"id":"class"})["list"]
         class_list = [item["name"] for item in class_data if "name" in item]
         self.choice_class = [SlashCommandChoice(name=i, value=i) for i in class_list]
-
+        print(class_list)
         self.setup_commands()
 
     def setup_commands(self):
@@ -37,7 +37,7 @@ class Homework_add(Extension):
             name = "classe",
             description = "Classe concernée",
             required = True,
-            opt_type = OptionType.INTEGER,
+            opt_type = OptionType.STRING,
             choices = self.choice_class
             )
         async def message_add(ctx: SlashContext, nom, matière, named):
