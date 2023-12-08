@@ -19,11 +19,11 @@ class Dashboard(Extension):
         #remplie les listes des bons devoirs (il faudra trier les dates)
         for homework in homeworks:
             if homework['end_date'] >= current_date:
-                if homework["class"] == "all":
+                if homework["class"] == "All":
                     all_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['subject']} -.- {homework['end_date'].strftime('%d %m %Y')}")
-                elif homework["class"] == "cyber2":
+                elif homework["class"] == "Cyber2":
                     cyber_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['subject']} -.- {homework['end_date'].strftime('%d %m %Y')}")
-                elif homework["class"] == "dev":
+                elif homework["class"] == "Dev":
                     dev_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['subject']} -.- {homework['end_date'].strftime('%d %m %Y')}")
 
         dash_info = dash_db.find_one({"id":"1"})
@@ -31,7 +31,7 @@ class Dashboard(Extension):
         if channel:
             dashboard = Embed(
             title="DASHBOARD",
-            description="feur-feur-feur",
+            description="feur-feur-fer",
             color=0x018992,
             fields=[
                 EmbedField(
