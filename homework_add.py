@@ -8,8 +8,8 @@ class Homework_add(Extension):
         self.db = db
         self.homework_db = db["homework"]
         
-        subject_data = self.db["data"].find_one({"id":"subject"})["list"]
-        subject_list = [item["name"] for item in subject_data if "name" in item]
+        self.subject_data = self.db["data"].find_one({"id":"subject"})["list"]
+        subject_list = [item["name"] for item in self.subject_data if "name" in item]
         self.choice_subject = [SlashCommandChoice(name=i, value=i) for i in subject_list]
 
         class_data = self.db["data"].find_one({"id":"class"})["list"]
@@ -67,9 +67,10 @@ class Homework_add(Extension):
             except ValueError:
                 await ctx.send("Erreur de format de date. Utilisez le format YYYY-MM-DD.")
             
+            prof = [item.get("prof") for item in self.subject_data if "name" in item and item["name"] == matière]
             self.homework_db.insert_one({
                 "name": nom,
-                "prof": "fuck faut faire la logic par rapport à la matière",
+                "prof": prof[0],
                 "subject": matière,
                 "class": classe,
                 "start_date": date_start,
