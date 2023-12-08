@@ -1,4 +1,5 @@
 from interactions import *
+from bson import ObjectId
 
 class Homework_remove(Extension):
     def __init__(self, bot, db):
@@ -20,9 +21,9 @@ class Homework_remove(Extension):
             required=True,
             opt_type=OptionType.STRING,
             )
-        async def message_remove(ctx: SlashContext):
-            
-            await ctx.send(f"Devoir supprimé:")
+        async def message_remove(ctx: SlashContext, id):
+            self.homework_db.delete_one({"_id" : ObjectId(id)})
+            await ctx.send(f"Devoir {id} supprimé")
 
         self.bot.add_command(message_remove)
 
