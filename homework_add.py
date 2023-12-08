@@ -40,7 +40,7 @@ class Homework_add(Extension):
             opt_type = OptionType.STRING,
             choices = self.choice_class
             )
-        async def message_add(ctx: SlashContext, nom, matière, named):
-            await ctx.send(f"yo ça marche feur{ctx} {matière, named}")
+        async def message_add(ctx: SlashContext, nom, matière, classe):
+            await ctx.send(f"yo ça marche feur{ctx} {matière, classe}")
 
         self.bot.add_command(message_add)
