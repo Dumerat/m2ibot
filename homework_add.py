@@ -6,8 +6,9 @@ class Homework_add(Extension):
         self.bot = bot
         self.db = db
         
-        subject = self.db["data"].find_one({"id":"subject"})
-        subject_list = subject["list"]
+        subject = self.db["data"].find_one({"id":"subject"})["list"]
+        subject_list = [item["name"] for item in subject if "name" in item]
+        print(subject_list)
         self.choice_list =[SlashCommandChoice(name=i, value=i) for i in subject_list]
         self.setup_commands()
 
