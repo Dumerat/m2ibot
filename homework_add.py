@@ -40,7 +40,25 @@ class Homework_add(Extension):
             opt_type = OptionType.STRING,
             choices = self.choice_class
             )
-        async def message_add(ctx: SlashContext, nom, matière, classe):
-            await ctx.send(f"yo ça marche feur{ctx} {matière, classe}")
+        @slash_option(
+            name = "date_start",
+            description = "Date de début du devoir (jour-mois-année)",
+            required = True,
+            opt_type = OptionType.STRING,
+            )
+        @slash_option(
+            name = "date_end",
+            description = "Date de fin du devoir (jour-mois-année)",
+            required = True,
+            opt_type = OptionType.STRING,
+            )
+        @slash_option(
+            name = "link",
+            description = "Lien vers le devoir",
+            required = True,
+            opt_type = OptionType.STRING,
+            )
+        async def message_add(ctx: SlashContext, nom, matière, classe, date_start, date_end, link):
+            await ctx.send(f"yo ça marche feur {nom} {matière, classe, date_start, date_end, link}")
 
         self.bot.add_command(message_add)
