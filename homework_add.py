@@ -6,40 +6,41 @@ class Homework_add(Extension):
         self.bot = bot
         self.db = db
         
-        subject = self.db["data"].find_one({"id":"subject"})["list"]
-        subject_list = [item["name"] for item in subject if "name" in item]
-        print(subject_list)
-        self.choice_list =[SlashCommandChoice(name=i, value=i) for i in subject_list]
+        subject_data = self.db["data"].find_one({"id":"subject"})["list"]
+        subject_list = [item["name"] for item in subject_data if "name" in item]
+        self.choice_subject = [SlashCommandChoice(name=i, value=i) for i in subject_list]
+
+        class_data = self.db["data"].find_one({"id":"class"})["list"]
+        class_list = [item["name"] for item in class_data if "name" in item]
+        self.choice_class = [SlashCommandChoice(name=i, value=i) for i in class_list]
+
         self.setup_commands()
 
     def setup_commands(self):
         @slash_command(
             name="add",
-            description="Permet d'ajouter un devoir pour tout le monde")
+            description="Permet d'ajouter un devoir")
         @slash_option(
-            name = "name",
-            description= "nom du devoir",
+            name = "nom",
+            description= "Nom du devoir",
             required=True,
             opt_type=OptionType.STRING,
             )
         @slash_option(
             name = "matière",
-            description= "nom de la matière",
-            required=True,
-            opt_type=OptionType.STRING,
-            choices=self.choice_list
+            description = "Nom de la matière",
+            required = True,
+            opt_type = OptionType.STRING,
+            choices = self.choice_subject
             )
         @slash_option(
-            name = "named",
-            description= "nom du devoir",
-            required=True,
-            opt_type=OptionType.INTEGER,
-            choices=[
-                SlashCommandChoice(name="poulet", value=1),
-                SlashCommandChoice(name="nuggets", value=2)
-            ]
+            name = "classe",
+            description = "Classe concernée",
+            required = True,
+            opt_type = OptionType.INTEGER,
+            choices = self.choice_class
             )
-        async def message_add(ctx: SlashContext, name, matière, named):
+        async def message_add(ctx: SlashContext, nom, matière, named):
             await ctx.send(f"yo ça marche feur{ctx} {matière, named}")
 
         self.bot.add_command(message_add)
