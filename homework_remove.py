@@ -1,6 +1,7 @@
 from interactions import *
 from bson import ObjectId
 from datetime import *
+from pymongo.errors import PyMongoError
 
 class Homework_remove(Extension):
     def __init__(self, bot, db):
@@ -11,6 +12,7 @@ class Homework_remove(Extension):
 
         self.setup_removebyid()
         self.setup_find()
+
 
     def setup_removebyid(self):
         @slash_command(
@@ -23,8 +25,18 @@ class Homework_remove(Extension):
             opt_type=OptionType.STRING,
             )
         async def removebyid(ctx: SlashContext, id):
-            self.homework_db.delete_one({"_id" : ObjectId(id)})
-            await ctx.send(f"Devoir {id} supprimé")
+            try:
+                if ObjectId.is_valid(id):
+                    result = self.homework_db.delete_one({"_id": ObjectId(id)})
+                    if result.deleted_count > 0:
+                        await ctx.send(f"Devoir {id} supprimé")
+                    else:
+                        await ctx.send(f"Aucun devoir trouvé avec l'ID {id}")
+                else:
+                 await ctx.send(f"ID incorrect : {id}")
+            except PyMongoError as e:
+                await ctx.send(f"Une erreur s'est produite lors de la suppression du devoir : {str(e)}")
+
 
         self.bot.add_command(removebyid)
 
@@ -40,7 +52,6 @@ class Homework_remove(Extension):
             )
         async def homework_find(ctx: SlashContext, nom):
             homework_items = self.homework_db.find({"name": nom})
-            
             count = self.homework_db.count_documents({"name": nom})
             
             if count == 0:
@@ -51,12 +62,8 @@ class Homework_remove(Extension):
                     homework_id = homework["_id"]
                     start_date = homework.get("start_date", "Date non trouvée !")
                     start_dated = start_date.strftime("%d %m %Y")
-                    message += f"L'ID du devoir est : {homework_id} crée le {start_dated}\n"
-                
+                    message += f"L'ID du devoir est : {homework_id} date de début le {start_dated}\n" 
                 message += f"\nUtilise /removebyid <ID> pour supprimer un devoir."
                 await ctx.send(message)
-
-
-
 
         self.bot.add_command(homework_find)
