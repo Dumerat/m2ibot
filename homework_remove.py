@@ -1,5 +1,6 @@
 from interactions import *
 from bson import ObjectId
+from datetime import *
 
 class Homework_remove(Extension):
     def __init__(self, bot, db):
@@ -48,8 +49,9 @@ class Homework_remove(Extension):
                 message = f"Devoirs trouvés avec le nom {nom}:\n"
                 for homework in homework_items:
                     homework_id = homework["_id"]
-
-                    message += f"L'ID du devoir est : {homework_id}\n"
+                    start_date = homework.get("start_date", "Date non trouvée !")
+                    start_dated = start_date.strftime("%d %m %Y")
+                    message += f"L'ID du devoir est : {homework_id} crée le {start_dated}\n"
                 
                 message += f"\nUtilise /removebyid <ID> pour supprimer un devoir."
                 await ctx.send(message)
