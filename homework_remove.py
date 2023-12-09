@@ -8,10 +8,10 @@ class Homework_remove(Extension):
         self.db = db
         self.homework_db = db["homework"]
 
-        self.setup_remove()
+        self.setup_removebyid()
         self.setup_find()
 
-    def setup_remove(self):
+    def setup_removebyid(self):
         @slash_command(
             name="removebyid",
             description="Permet de supprimer un devoir")
@@ -21,16 +21,16 @@ class Homework_remove(Extension):
             required=True,
             opt_type=OptionType.STRING,
             )
-        async def message_remove(ctx: SlashContext, id):
+        async def removebyid(ctx: SlashContext, id):
             self.homework_db.delete_one({"_id" : ObjectId(id)})
             await ctx.send(f"Devoir {id} supprimé")
 
-        self.bot.add_command(message_remove)
+        self.bot.add_command(removebyid)
 
     def setup_find(self):
         @slash_command(
             name="findhomeworkid",
-            description="Permet de Trouver l'id un devoir")
+            description="Permet de Trouver l'id d'un devoir")
         @slash_option(
             name = "nom",
             description= "Nom du devoir à trouver",
@@ -38,8 +38,23 @@ class Homework_remove(Extension):
             opt_type=OptionType.STRING,
             )
         async def homework_find(ctx: SlashContext, nom):
-            homework_id = self.homework_db.find_one({"name" : nom})["_id"]
-            await ctx.send(f"l'id de {nom} est: {homework_id} \nutilise /removebyid {homework_id} pour le supprimer")
+            homework_items = self.homework_db.find({"name": nom})
+            
+            count = self.homework_db.count_documents({"name": nom})
+            
+            if count == 0:
+                await ctx.send(f"Aucun devoir trouvé avec le nom {nom}.")
+            else:
+                message = f"Devoirs trouvés avec le nom {nom}:\n"
+                for homework in homework_items:
+                    homework_id = homework["_id"]
+
+                    message += f"L'ID du devoir est : {homework_id}\n"
+                
+                message += f"\nUtilise /removebyid <ID> pour supprimer un devoir."
+                await ctx.send(message)
+
+
 
 
         self.bot.add_command(homework_find)
