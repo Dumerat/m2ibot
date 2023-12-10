@@ -6,7 +6,6 @@ class User_add(Extension):
         super().__init__()
         self.bot = bot
         self.db = db
-        self.user_db = db["user"]
 
         class_data = self.db["data"].find_one({"id":"class"})["list"]
         class_list = [item["name"] for item in class_data if "name" in item]
@@ -46,8 +45,10 @@ class User_add(Extension):
             opt_type = OptionType.STRING,
             )
         async def user_add(ctx: SlashContext, name=None, lastname=None, group=None, birthday=None):
-            res = self.user_db.find_one({"userid": ctx.user.id})
+            res = self.db["user"].find_one({"userid": str(ctx.user.id)})
+            print(res)
             if res is not None:
+                print("yes")
                 if birthday:
                     try:
                         birthday = datetime.strptime(birthday, "%Y-%m-%d")
@@ -55,8 +56,8 @@ class User_add(Extension):
                     except ValueError:
                         await ctx.send("Erreur de format de date. Utilisez le format YYYY-MM-DD.")
             else:
-                return ("logic of user creation")
+                await ctx.send("logic of user creation")
 
-            await ctx.send(f"Devoir ajouté: {birthday} {ctx.user.id}")
+            await ctx.send(f"Devoir ajouté: {birthday}")
 
         self.bot.add_command(user_add)
