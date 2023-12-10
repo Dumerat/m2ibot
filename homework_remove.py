@@ -33,7 +33,7 @@ class Homework_remove(Extension):
                     else:
                         await ctx.send(f"Aucun devoir trouvé avec l'ID {id}")
                 else:
-                 await ctx.send(f"ID incorrect : {id}")
+                    await ctx.send(f"l'ID: {id} n'est pas un ObjectId")
             except PyMongoError as e:
                 await ctx.send(f"Une erreur s'est produite lors de la suppression du devoir : {str(e)}")
 
