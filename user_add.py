@@ -8,7 +8,7 @@ class User_add(Extension):
         self.db = db
 
         class_data = self.db["data"].find_one({"id":"class"})["list"]
-        class_list = [item["name"] for item in class_data if "name" in item]
+        class_list = [item["name"] for item in class_data if "name" in item and item["name"] != "All"]
         class_other_data = self.db["data"].find_one({"id":"class"})["otherList"]
         class_other_list = [item["name"] for item in class_other_data if "name" in item]
         self.choice_group = [SlashCommandChoice(name=i, value=i) for i in class_list + class_other_list]
@@ -46,16 +46,16 @@ class User_add(Extension):
             )
         async def user_add(ctx: SlashContext, name=None, lastname=None, group=None, birthday=None):
             res = self.db["user"].find_one({"userid": str(ctx.user.id)})
+            
+            if birthday:
+                try:
+                    birthday = datetime.strptime(birthday, "%Y-%m-%d")
+                except ValueError:
+                    await ctx.send("Erreur de format de date. Utilisez le format YYYY-MM-DD.")
+                    return
+            
             if res is not None:
-                # User exists, update the information
-                if birthday:
-                    try:
-                        birthday = datetime.strptime(birthday, "%Y-%m-%d")
-                    except ValueError:
-                        await ctx.send("Erreur de format de date. Utilisez le format YYYY-MM-DD.")
-                        return
-
-                # Prepare update data, excluding None values
+                # Prepare data excluding None values
                 update_data = {
                     key: value for key, value in {
                         "name": name,
@@ -64,34 +64,23 @@ class User_add(Extension):
                         "birthday": birthday
                     }.items() if value is not None
                 }
-
                 self.db["user"].update_one(
                     {"userid": str(ctx.user.id)},
                     {"$set": update_data}
                 )
-
-                await ctx.send("Information utilisateur mis à jour.")
-            else:
-                if birthday:
-                    try:
-                        birthday = datetime.strptime(birthday, "%Y-%m-%d")
-                    except ValueError:
-                        await ctx.send("Erreur de format de date. Utilisez le format YYYY-MM-DD.")
-                        return
-
+                await ctx.send(f"Information utilisateur mis à jour: {update_data}")
+            else:         
                 user_data = {
                     "userid": str(ctx.user.id),
-                    **{key: value for key, value in {
+                    **{key: value for key, value in { #unpacking other element
                         "name": name,
                         "lastname": lastname,
                         "group": group,
                         "birthday": birthday
                     }.items() if value is not None}
                 }
-
-                # Insert user data into the database
                 self.db["user"].insert_one(user_data)
 
-                await ctx.send(f"Utilisateur ajouté: {name} {lastname}")
+                await ctx.send(f"Utilisateur ajouté: {user_data}")
 
         self.bot.add_command(user_add)
