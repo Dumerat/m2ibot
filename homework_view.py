@@ -10,6 +10,10 @@ class homework_view(Extension):
         self.db = db
         self.homework_db = db["homework"]
 
+        class_data = self.db["data"].find_one({"id":"class"})["list"]
+        class_list = [item["name"] for item in class_data if "name" in item]
+        self.choice_class = [SlashCommandChoice(name=i, value=i) for i in class_list]
+
         self.setup_view_homework()
         self.setup_view_all_homework()
 
@@ -41,7 +45,7 @@ class homework_view(Extension):
             description="Choisir la catégorie des devoirs que tu veux trouver",
             required=True,
             opt_type=OptionType.STRING,
-            choices= ""
+            choices=self.choice_class,
             )
         @slash_option(
             name="passed",
