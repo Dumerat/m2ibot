@@ -1,6 +1,7 @@
 from interactions import *
 from datetime import datetime
 from interactions.api.events import Component
+import asyncio
 
 class Dashboard(Extension):
     def __init__(self, bot, db):
@@ -11,7 +12,7 @@ class Dashboard(Extension):
 #auto update dashboard function
     async def dashboard_update(self, bot, db):
         homework_db = db["homework"]
-        dash_db = db["dashboard"]
+        dash_db = db["data"]
         all_value, cyber_value, dev_value = [], [], []
 
         current_date = datetime.now()
@@ -26,7 +27,7 @@ class Dashboard(Extension):
                 elif homework["class"] == "Dev":
                     dev_value.append(f"{homework['name']} -.- {homework['link']} -.- {homework['subject']} -.- {homework['end_date'].strftime('%d %m %Y')}")
 
-        dash_info = dash_db.find_one({"id":"1"})
+        dash_info = dash_db.find_one({"id":"dash"})
         channel = bot.get_channel(str(dash_info["channel_id"]))
         if channel:
             dashboard = Embed(
@@ -66,7 +67,7 @@ class Dashboard(Extension):
             else:
                 new_dash = await channel.send(embed=dashboard)
                 dash_db.update_one(
-                    {"id":"1"},
+                    {"id":"dash"},
                     {"$set": {"message_id": new_dash.id}}
                 )
         else:
@@ -77,14 +78,22 @@ class Dashboard(Extension):
     async def update(self):
         await self.dashboard_update(self.bot, self.db)
 
-    @listen()
+    @listen(Component) # if any error here split those with @listen() for startup
     async def on_startup(self):
         await self.dashboard_update(self.bot, self.db) #update the dashboard at the start
         self.update.start() #start the auto update task
-    
-    @listen(Component)
     async def on_component(self, event: Component):
         ctx = event.ctx
         match ctx.custom_id:
             case "force_update": #not created yet
                 await self.dashboard_update(self.bot, self.db)
+    
+    @slash_command(
+        name="movedash",
+        description="Permet de définir le channel du dashboard (owner only)")
+    @check(is_owner())
+    @slash_default_member_permission(Permissions.MANAGE_CHANNELS)
+    async def moveDash(self, ctx: SlashContext):
+        msg = await ctx.send(f"Le Dashboard va maintenant utiliser ce salon")
+        await asyncio.sleep(20)
+        await msg.delete()
