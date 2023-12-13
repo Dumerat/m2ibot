@@ -34,6 +34,7 @@ async def hello(ctx: SlashContext):
 
 bot.load_extension("homework_add", bot, db=db)
 bot.load_extension("homework_remove",bot ,db=db)
+bot.load_extension("homework_view", bot, db=db)
 # bot.load_extension("modal_add", bot, db=db)
 bot.load_extension("user_add", bot, db=db)
 bot.load_extension("dashboard", bot, db=db)
