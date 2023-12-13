@@ -62,6 +62,7 @@ class Dashboard(Extension):
                 icon_url=bot.user.avatar_url,
             )
             dash = await channel.fetch_message(str(dash_info["message_id"]))
+            self.dash = dash
             if dash:
                 await dash.edit(embed=dashboard)
             else:
@@ -78,10 +79,12 @@ class Dashboard(Extension):
     async def update(self):
         await self.dashboard_update(self.bot, self.db)
 
-    @listen(Component) # if any error here split those with @listen() for startup
+    @listen()
     async def on_startup(self):
         await self.dashboard_update(self.bot, self.db) #update the dashboard at the start
         self.update.start() #start the auto update task
+
+    @listen(Component)
     async def on_component(self, event: Component):
         ctx = event.ctx
         match ctx.custom_id:
@@ -94,6 +97,14 @@ class Dashboard(Extension):
     @check(is_owner())
     @slash_default_member_permission(Permissions.MANAGE_CHANNELS)
     async def moveDash(self, ctx: SlashContext):
-        msg = await ctx.send(f"Le Dashboard va maintenant utiliser ce salon")
-        await asyncio.sleep(20)
-        await msg.delete()
+        try:
+            self.db["data"].update_one(
+                {"id":"dash"},
+                {"$set": {"channel_id": ctx.channel_id}}
+            )
+            # self.dash.delete() peut êtte une autre fois
+            msg = await ctx.send(f"Le Dashboard va maintenant utiliser ce salon")
+            await asyncio.sleep(20)
+            await msg.delete()
+        except:
+            await ctx.send("i don't know how but that doesn't work...")
