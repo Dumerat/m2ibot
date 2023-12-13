@@ -23,6 +23,7 @@ class homework_view(Extension):
             description="Permet de voir les devoirs me concernant")
         async def view_homework(ctx: SlashContext):
             try:
+                await ctx.send(ctx.user.id) # trouver le user sur la db pour son groupe puis faut taffer maintenant et penser à rajouter un tag sur chaque devoir pour savoir qui a finis le devoirs (à l'aide)
                 if ObjectId.is_valid(id):
                     result = self.homework_db.delete_one({"_id": ObjectId(id)})
                     if result.deleted_count > 0:
