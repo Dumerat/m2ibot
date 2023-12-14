@@ -24,16 +24,8 @@ class homework_view(Extension):
         async def view_homework(ctx: SlashContext):
             try:
                 await ctx.send(ctx.user.id) # trouver le user sur la db pour son groupe puis faut taffer maintenant et penser à rajouter un tag sur chaque devoir pour savoir qui a finis le devoirs (à l'aide)
-                if ObjectId.is_valid(id):
-                    result = self.homework_db.delete_one({"_id": ObjectId(id)})
-                    if result.deleted_count > 0:
-                        await ctx.send(f"Devoir {id} supprimé")
-                    else:
-                        await ctx.send(f"Aucun devoir trouvé avec l'ID {id}")
-                else:
-                    await ctx.send(f"l'ID: {id} n'est pas un ObjectId")
-            except PyMongoError as e:
-                await ctx.send(f"Une erreur s'est produite lors de la suppression du devoir : {str(e)}")
+            except:
+                ctx.send("nothing found")
 
         self.bot.add_command(view_homework)
 
@@ -58,16 +50,6 @@ class homework_view(Extension):
             homework_items = self.homework_db.find({"name": nom})
             count = self.homework_db.count_documents({"name": nom})
             
-            if count == 0:
-                await ctx.send(f"Aucun devoir trouvé avec le nom {nom}.")
-            else:
-                message = f"Devoirs trouvés avec le nom {nom}:\n"
-                for homework in homework_items:
-                    homework_id = homework["_id"]
-                    start_date = homework.get("start_date", "Date non trouvée !")
-                    start_dated = start_date.strftime("%d %m %Y")
-                    message += f"L'ID du devoir est : {homework_id} date de début le {start_dated}\n" 
-                message += f"\nUtilise /removebyid <ID> pour supprimer un devoir."
-                await ctx.send(message)
+            await ctx.send('to fill')
 
         self.bot.add_command(view_all_homework)
