@@ -6,8 +6,8 @@ from dotenv import load_dotenv, find_dotenv
 import os
 
 load_dotenv(find_dotenv())
-url = f"mongodb+srv://dumerat:{os.environ.get('PASS')}@bddisc.diuwvtd.mongodb.net/?retryWrites=true&w=majority"
-client = MongoClient(url, server_api=ServerApi('1'))
+uri = f"mongodb+srv://dumerat:{os.environ.get('PASS')}@bddisc.diuwvtd.mongodb.net/?retryWrites=true&w=majority"
+client = MongoClient(uri, server_api=ServerApi('1'))
 db = client["m2i"]
 
 user_db = db["user"]
