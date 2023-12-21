@@ -7,6 +7,7 @@ class Homework_add(Extension):
         self.bot = bot
         self.db = db
         self.homework_db = db["homework"]
+        self.user_db = db["user"]
         
         self.subject_data = self.db["data"].find_one({"id":"subject"})["list"]
         subject_list = [item["name"] for item in self.subject_data if "name" in item]
@@ -68,6 +69,7 @@ class Homework_add(Extension):
                 await ctx.send("Erreur de format de date. Utilisez le format YYYY-MM-DD.")
             
             prof = [item.get("prof") for item in self.subject_data if "name" in item and item["name"] == matière]
+            # student = user_db
             self.homework_db.insert_one({
                 "name": nom,
                 "prof": prof[0],
@@ -75,7 +77,8 @@ class Homework_add(Extension):
                 "class": classe,
                 "start_date": date_start,
                 "end_date": date_end,
-                "link": link
+                "link": link,
+                "completed": {}
                 })
             await ctx.send(f"Devoir ajouté: {nom} - Matière : {matière} - Classe : {classe} - Début : {date_start} - Fin : {date_end} - Lien : {link}")
 

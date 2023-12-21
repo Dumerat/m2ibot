@@ -61,7 +61,7 @@ class User_add(Extension):
                         "name": name,
                         "lastname": lastname,
                         "group": group,
-                        "birthday": birthday
+                        "birthday": birthday,
                     }.items() if value is not None
                 }
                 self.db["user"].update_one(
@@ -72,6 +72,7 @@ class User_add(Extension):
             else:         
                 user_data = {
                     "userid": str(ctx.user.id),
+                    "nickname": ctx.user.global_name
                     **{key: value for key, value in { #unpacking other element
                         "name": name,
                         "lastname": lastname,
