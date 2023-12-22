@@ -72,7 +72,7 @@ class User_add(Extension):
             else:         
                 user_data = {
                     "userid": str(ctx.user.id),
-                    "nickname": ctx.user.global_name
+                    "nickname": ctx.user.global_name,
                     **{key: value for key, value in { #unpacking other element
                         "name": name,
                         "lastname": lastname,

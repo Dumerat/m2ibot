@@ -32,7 +32,7 @@ class Dashboard(Extension):
         if channel:
             dashboard = Embed(
             title="DASHBOARD",
-            description="feur-feur-fer",
+            description="pas de desc pour le moment",
             color=0x018992,
             fields=[
                 EmbedField(

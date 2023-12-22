@@ -67,9 +67,16 @@ class Homework_add(Extension):
                 date_end = datetime.strptime(date_end, "%Y-%m-%d")
             except ValueError:
                 await ctx.send("Erreur de format de date. Utilisez le format YYYY-MM-DD.")
+                return
             
             prof = [item.get("prof") for item in self.subject_data if "name" in item and item["name"] == matière]
-            # student = user_db
+            if classe == "All":
+                concerned_student = self.user_db.find({"group": {"$in": ["Cyber2", "Dev"]}}, {"nickname": 1,"name": 1, "_id": 0})
+            else:
+                concerned_student = self.user_db.find({"group": classe}, {"nickname": 1,"name": 1, "_id": 0})
+            concerned_student_list = [{"nickname": item.get("nickname", "None"), "name": item.get("name", "None"), "finished": False} for item in concerned_student]
+            print(concerned_student_list)
+            
             self.homework_db.insert_one({
                 "name": nom,
                 "prof": prof[0],
@@ -78,7 +85,7 @@ class Homework_add(Extension):
                 "start_date": date_start,
                 "end_date": date_end,
                 "link": link,
-                "completed": {}
+                "completed": concerned_student_list
                 })
             await ctx.send(f"Devoir ajouté: {nom} - Matière : {matière} - Classe : {classe} - Début : {date_start} - Fin : {date_end} - Lien : {link}")
 
